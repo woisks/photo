@@ -15,49 +15,52 @@ declare(strict_types=1);
 namespace Woisks\Photo\Models\Services;
 
 
+use Woisks\Jwt\Services\JwtService;
 use Woisks\Photo\Models\Entity\PhotoEntity;
 
 /**
- * Class PhotoHelpers.
+ * Class PhotoServices.
  *
  * @package Woisks\Photo\Models\Services
  *
  * @Author  Maple Grove  <bolelin@126.com> 2019/6/12 17:18
  */
-class PhotoHelpers
+class PhotoServices
 {
+
+
     /**
-     * exists. 2019/6/12 17:18.
+     * exists. 2019/7/30 23:14.
      *
      * @param int $id
      *
-     * @return mixed
+     * @return bool
      */
     public static function exists(int $id)
     {
-        return PhotoEntity::where('id', $id)->exists();
+        $db = PhotoEntity::where('id', $id)->first();
+        if ($db) {
+            return $db->account_uid == JwtService::jwt_account_uid() ? true : false;
+        }
+        return false;
     }
 
+
     /**
-     * transUrl. 2019/6/12 17:18.
+     * transUrl. 2019/7/30 23:14.
      *
-     * @param $type
-     * @param $id
+     * @param int $id
      *
-     * @return array|string
+     * @return mixed|string
      */
-    public static function transUrl($type, $id)
+    public static function transUrl(int $id)
     {
-        if (is_array($id)) {
+        $suffix = (int)substr((string)$id, -1, 1);
 
-            $url = [];
-            foreach ($id as $value) {
-                $url[] = config('filesystems.disks.' . $type . '.access_url') . '/' . $type . '/_' . $value;
-            }
-
-            return $url;
+        if (in_array($suffix, [1, 3, 5, 7, 9])) {
+            return config('filesystems.disks.qiniu.access_url') . '/' . $id;
+        } else {
+            return env('PHOTO_NOT_EXISTS_URL');
         }
-
-        return config('filesystems.disks.' . $type . '.access_url') . '/' . $type . '/_' . $id;
     }
 }

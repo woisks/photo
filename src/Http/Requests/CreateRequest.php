@@ -15,15 +15,15 @@ declare(strict_types=1);
 namespace Woisks\Photo\Http\Requests;
 
 
-class CreatePhotoRequest extends Requests
+class CreateRequest extends Requests
 {
     public function rules()
     {
         return [
-            'upload' => 'required|image',
-            'type'   => 'required|string|max:20',
-            'title'  => 'sometimes|required|string|max:18',
-            'readme' => 'sometimes|required|string|max:118'
+            'upload'   => 'required|image|max:4096',
+            'type'     => 'required|string|max:20',
+            'title'    => 'sometimes|required|string|max:18',
+            'descript' => 'sometimes|required|string|max:120'
         ];
     }
 

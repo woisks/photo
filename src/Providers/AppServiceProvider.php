@@ -43,8 +43,11 @@ class AppServiceProvider extends ServiceProvider
             $flysystem->addPlugin(new PrivateDownloadUrl());
             $flysystem->addPlugin(new RefreshFile());
 
+
             return $flysystem;
         });
+
+
         $this->loadRoutesFrom(__DIR__ . '/../routes.php');
     }
 

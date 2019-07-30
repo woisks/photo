@@ -12,34 +12,41 @@ declare(strict_types=1);
  * +----------------------------------------------------------------------+
  */
 
-namespace Woisks\Photo\Models\Entity;
+namespace Woisks\Photo\Models\Repository;
 
+
+use Woisks\Photo\Models\Entity\TypeEntity;
 
 /**
- * Class CountEntity.
+ * Class TypeRepository.
  *
- * @package Woisks\Photo\Models\Entity
+ * @package Woisks\Photo\Models\Repository
  *
- * @Author  Maple Grove  <bolelin@126.com> 2019/6/10 23:42
+ * @Author Maple Grove  <bolelin@126.com> 2019/7/28 22:35
  */
-class CountEntity extends Models
+class TypeRepository
 {
     /**
-     * table.  2019/6/10 23:42.
+     * model.  2019/7/28 22:35.
      *
-     * @var  string
+     * @var static TypeEntity
      */
-    protected $table = 'photo_type_count';
-    /**
-     * fillable.  2019/6/10 23:42.
-     *
-     * @var  array
-     */
-    protected $fillable = [
-        'id',
-        'name',
-        'count',
-    ];
+    private static $model;
 
-    public $timestamps = false;
+    /**
+     * TypeRepository constructor. 2019/7/28 22:35.
+     *
+     * @param TypeEntity $photo
+     *
+     * @return void
+     */
+    public function __construct(TypeEntity $photo)
+    {
+        self::$model = $photo;
+    }
+
+    public function first($type)
+    {
+        return self::$model->where('type', $type)->first();
+    }
 }

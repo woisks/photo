@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 
 Route::prefix('photo')
-     ->middleware('token')
-     ->namespace('Woisks\Photo\Http\Controllers')
-     ->group(function () {
+    ->middleware('token')
+    ->namespace('Woisks\Photo\Http\Controllers')
+    ->group(function () {
 
-         Route::post('/', 'CreatePhotoController@create');
+        Route::post('/', 'CreateController@create');
 
-     });
+    });

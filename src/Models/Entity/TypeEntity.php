@@ -16,33 +16,32 @@ namespace Woisks\Photo\Models\Entity;
 
 
 /**
- * Class PhotoEntity.
+ * Class TypeEntity.
  *
  * @package Woisks\Photo\Models\Entity
  *
- * @Author  Maple Grove  <bolelin@126.com> 2019/6/10 23:41
+ * @Author  Maple Grove  <bolelin@126.com> 2019/6/10 23:42
  */
-class PhotoEntity extends Models
+class TypeEntity extends Models
 {
     /**
-     * table.  2019/6/10 23:41.
+     * table.  2019/6/10 23:42.
      *
      * @var  string
      */
-    protected $table = 'Photo';
+    protected $table = 'photo_type_count';
     /**
-     * fillable.  2019/6/10 23:41.
+     * fillable.  2019/6/10 23:42.
      *
      * @var  array
      */
     protected $fillable = [
         'id',
-        'account_uid',
         'type',
-        'title',
-        'descript',
-        'created_at',
-        'updated_at',
-        'status'
+        'name',
+        'readme',
+        'count',
     ];
+
+    public $timestamps = false;
 }
