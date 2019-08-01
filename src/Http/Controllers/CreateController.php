@@ -92,12 +92,12 @@ class CreateController extends BaseController
                 \DB::beginTransaction();
 
                 $type_db->increment('count');
-                
-                CountServices::increment('user', 'photo', $account_uid, $account_uid);
+
+                CountServices::increment('user', 'photo', $account_uid);
                 $this->photoRepo->created($account_uid, $id, $type, $title, $descript);
 
             } catch (\Throwable $e) {
-                dd($e);
+
                 \DB::rollBack();
                 return res(500, 'Come back later');
             }
