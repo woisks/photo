@@ -32,11 +32,11 @@ class PhotoServices
     /**
      * exists. 2019/7/30 23:14.
      *
-     * @param int $id
+     * @param $id
      *
      * @return bool
      */
-    public static function exists(int $id)
+    public static function exists($id)
     {
         $db = PhotoEntity::where('id', $id)->first();
         if ($db) {
@@ -49,11 +49,11 @@ class PhotoServices
     /**
      * transUrl. 2019/7/30 23:14.
      *
-     * @param int $id
+     * @param  $id
      *
      * @return mixed|string
      */
-    public static function transUrl(int $id)
+    public static function transUrl($id)
     {
         $suffix = (int)substr((string)$id, -1, 1);
 

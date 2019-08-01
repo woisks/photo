@@ -16,6 +16,7 @@ namespace Woisks\Photo\Http\Controllers;
 
 
 use Illuminate\Http\JsonResponse;
+use Woisks\Count\Models\Services\CountServices;
 use Woisks\Jwt\Services\JwtService;
 use Woisks\Photo\Http\Requests\CreateRequest;
 use Woisks\Photo\Models\Repository\PhotoRepository;
@@ -63,11 +64,12 @@ class CreateController extends BaseController
 
 
     /**
-     * create. 2019/7/30 22:03.
+     * create. 2019/8/1 18:39.
      *
      * @param CreateRequest $request
      *
      * @return JsonResponse
+     * @throws \Exception
      */
     public function create(CreateRequest $request)
     {
@@ -75,7 +77,7 @@ class CreateController extends BaseController
         $type     = $request->input('type');
         $title    = $request->input('title', '');
         $descript = $request->input('descript', '');
-  
+
         if ($suffix = $file->extension() == 'svg') {
             return res(422, 'image not supported svg  ');
         }
@@ -85,12 +87,14 @@ class CreateController extends BaseController
         }
 
         if ($this->qiniu($id = create_photo_id() . create_photo_type(), $file, $suffix)) {
-
+            $account_uid = JwtService::jwt_account_uid();
             try {
                 \DB::beginTransaction();
 
                 $type_db->increment('count');
-                $this->photoRepo->created(JwtService::jwt_account_uid(), $id, $type, $title, $descript);
+                
+                CountServices::increment('user', 'photo', $account_uid, $account_uid);
+                $this->photoRepo->created($account_uid, $id, $type, $title, $descript);
 
             } catch (\Throwable $e) {
                 dd($e);
