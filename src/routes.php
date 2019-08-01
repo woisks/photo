@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 
 Route::prefix('photo')
-    ->middleware('token')
+    ->middleware(['token', 'throttle:20,1'])
     ->namespace('Woisks\Photo\Http\Controllers')
     ->group(function () {
 
