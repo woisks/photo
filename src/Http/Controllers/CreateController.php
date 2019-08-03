@@ -78,22 +78,30 @@ class CreateController extends BaseController
         $title    = $request->input('title', '');
         $descript = $request->input('descript', '');
 
+        //验证图片后缀
         if ($suffix = $file->extension() == 'svg') {
             return res(422, 'image not supported svg  ');
         }
 
+        //验证调用的模块
         if (!$type_db = $this->typeRepo->first($type)) {
             return res(404, 'type not exists ');
         }
 
         if ($this->qiniu($id = create_photo_id() . create_photo_type(), $file, $suffix)) {
+            //上传图片
             $account_uid = JwtService::jwt_account_uid();
+
             try {
                 \DB::beginTransaction();
 
+                //模块调用递增
                 $type_db->increment('count');
 
+                //模块图片递增
                 CountServices::increment('user', 'photo', $account_uid);
+
+                //创建图片记录
                 $this->photoRepo->created($account_uid, $id, $type, $title, $descript);
 
             } catch (\Throwable $e) {
