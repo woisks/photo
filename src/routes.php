@@ -20,7 +20,7 @@ Route::prefix('photo')
         Route::get('/{account_uid}', 'GetController@get')->where(['account_uid' => '[0-9]+']);
 
         Route::middleware(['token', 'throttle:20,1'])->group(function () {
-            
+
             Route::post('/', 'CreateController@create');
         });
 

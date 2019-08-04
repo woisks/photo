@@ -50,17 +50,18 @@ class PhotoServices
      * transUrl. 2019/7/30 23:14.
      *
      * @param  $id
+     * @param  $model
      *
      * @return mixed|string
      */
-    public static function transUrl($id)
+    public static function transUrl($id, $model)
     {
         $suffix = (int)substr((string)$id, -1, 1);
 
         if (in_array($suffix, [1, 3, 5, 7, 9])) {
             return config('filesystems.disks.qiniu.access_url') . '/' . $id;
         } else {
-            return env('PHOTO_NOT_EXISTS_URL');
+            return env('PHOTO_NOT_EXISTS_URL' . '/' . $model);
         }
     }
 }

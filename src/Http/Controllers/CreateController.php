@@ -25,7 +25,7 @@ use Woisks\Photo\Models\Services\QiniuStore;
 
 
 /**
- * Class CreateController.
+ * Class ChangeController.
  *
  * @package Woisks\Photo\Http\Controllers
  *
