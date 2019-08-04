@@ -45,6 +45,13 @@ class TypeRepository
         self::$model = $photo;
     }
 
+    /**
+     * first. 2019/8/3 23:50.
+     *
+     * @param $type
+     *
+     * @return mixed
+     */
     public function first($type)
     {
         return self::$model->where('type', $type)->first();

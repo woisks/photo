@@ -16,11 +16,11 @@ namespace Woisks\Photo\Http\Controllers;
 
 
 use Illuminate\Http\JsonResponse;
-use Woisks\Count\Models\Services\CountServices;
 use Woisks\Jwt\Services\JwtService;
 use Woisks\Photo\Http\Requests\CreateRequest;
 use Woisks\Photo\Models\Repository\PhotoRepository;
 use Woisks\Photo\Models\Repository\TypeRepository;
+use Woisks\Photo\Models\Repository\UserRepository;
 use Woisks\Photo\Models\Services\QiniuStore;
 
 
@@ -46,20 +46,14 @@ class CreateController extends BaseController
      * @var  TypeRepository
      */
     private $typeRepo;
+    private $userRepo;
 
 
-    /**
-     * CreateController constructor. 2019/7/30 22:03.
-     *
-     * @param PhotoRepository $photoRepo
-     * @param TypeRepository $typeRepo
-     *
-     * @return void
-     */
-    public function __construct(PhotoRepository $photoRepo, TypeRepository $typeRepo)
+    public function __construct(PhotoRepository $photoRepo, TypeRepository $typeRepo, UserRepository $userRepo)
     {
         $this->photoRepo = $photoRepo;
         $this->typeRepo  = $typeRepo;
+        $this->userRepo  = $userRepo;
     }
 
 
@@ -78,18 +72,20 @@ class CreateController extends BaseController
         $title    = $request->input('title', '');
         $descript = $request->input('descript', '');
 
+        $suffix = $file->extension();
         //验证图片后缀
-        if ($suffix = $file->extension() == 'svg') {
+        if ($suffix == 'svg') {
             return res(422, 'image not supported svg  ');
         }
 
+        $type_db = $this->typeRepo->first($type);
         //验证调用的模块
-        if (!$type_db = $this->typeRepo->first($type)) {
+        if (!$type_db) {
             return res(404, 'type not exists ');
         }
 
         if ($this->qiniu($id = create_photo_id() . create_photo_type(), $file, $suffix)) {
-            //上传图片
+            //上传图片成功
             $account_uid = JwtService::jwt_account_uid();
 
             try {
@@ -98,8 +94,8 @@ class CreateController extends BaseController
                 //模块调用递增
                 $type_db->increment('count');
 
-                //模块图片递增
-                CountServices::increment('user', 'photo', $account_uid);
+                //用户图片数量统计
+                $this->userRepo->incrementU($account_uid, $type);
 
                 //创建图片记录
                 $this->photoRepo->created($account_uid, $id, $type, $title, $descript);
@@ -118,7 +114,7 @@ class CreateController extends BaseController
             ]);
 
         }
-        return res(500, 'Come back later');
+        return res(500, 'photo upload error');
     }
 
     /**

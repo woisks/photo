@@ -14,10 +14,15 @@ declare(strict_types=1);
 
 
 Route::prefix('photo')
-    ->middleware(['token', 'throttle:20,1'])
     ->namespace('Woisks\Photo\Http\Controllers')
     ->group(function () {
 
-        Route::post('/', 'CreateController@create');
+        Route::get('/{account_uid}', 'GetController@get')->where(['account_uid' => '[0-9]+']);
+
+        Route::middleware(['token', 'throttle:20,1'])->group(function () {
+            
+            Route::post('/', 'CreateController@create');
+        });
+
 
     });
